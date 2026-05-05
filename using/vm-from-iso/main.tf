@@ -22,7 +22,7 @@ module "ubuntu_install_vm" {
 
   iso_source = "datastore"
   iso_file_name = "ubuntu-24.04.2-live-server-amd64.iso"
-  iso_datastore = "local-brtfs"
+  iso_datastore = "local-btrfs"
 
   cpu_cores = 1
   memory_mb = 1024

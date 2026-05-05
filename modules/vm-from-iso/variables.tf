@@ -94,7 +94,7 @@ variable "disk_size" {
 
 variable "disk_datastore" {
   type = string
-  default = "local-brtfs"
+  default = "local-btrfs"
 }
 
 variable "disk_interface" {
@@ -149,7 +149,7 @@ variable "machine_type" {
 variable "efi_datastore" {
   description = "Datastore для EFI диска (тільки якщо bios = 'ovmf')"
   type = string
-  default = "local-brtfs"
+  default = "local-btrfs"
 }
 
 # agent and other
