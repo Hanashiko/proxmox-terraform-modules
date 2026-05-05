@@ -21,3 +21,5 @@ crash.*.log
 
 *.tfplan
 *.plan
+
+terraform.tfvars
