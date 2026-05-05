@@ -28,7 +28,7 @@ module "ubuntu_install_vm" {
   memory_mb = 1024
   disk_size = 10
   bios = "ovmf"
-  machine_type = "i440fx"
+  machine_type = "pc"
 
   started = false
 }
