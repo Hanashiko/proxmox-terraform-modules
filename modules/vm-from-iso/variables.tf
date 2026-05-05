@@ -141,8 +141,9 @@ variable "machine_type" {
   type = string
   default = "pc"
   validation {
-    condition     = can(regex("^(pc|q35)(,viommu=(virtio|intel))?$", var.machine_type))  }
-      error_message = "machine_type має бути 'pc' (i440fx) або 'q35'. Для VIOMMU: 'q35,viommu=virtio'."
+    condition     = can(regex("^(pc|q35)(,viommu=(virtio|intel))?$", var.machine_type))
+    error_message = "machine_type має бути 'pc' (i440fx) або 'q35'. Для VIOMMU: 'q35,viommu=virtio'."
+  }
 }
 
 variable "efi_datastore" {
