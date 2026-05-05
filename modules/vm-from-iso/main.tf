@@ -56,7 +56,6 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   cdrom {
-    enabled = true
     file_id = local.iso_file_id
     interface = "ide2"
   }

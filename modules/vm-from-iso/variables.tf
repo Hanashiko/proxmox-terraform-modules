@@ -87,9 +87,9 @@ variable "memory_mb" {
 
 # Disk
 variable "disk_size" {
-  description = "Розмір системного диску (наприклад, '20G')"
-  type = string
-  default = "10G"
+  description = "Розмір системного диску (наприклад, 20)"
+  type = number
+  default = 10
 }
 
 variable "disk_datastore" {
@@ -137,9 +137,12 @@ variable "bios" {
 }
 
 variable "machine_type" {
-  description = "Тип машини: q35 або i440fx"
+  description = "Тип машини Proxmox/QEMU. Допустимі значення: 'q35', 'pc' (i440fx)"
   type = string
-  default = "i440fx"
+  default = "pc"
+  validation {
+    condition     = can(regex("^(pc|q35)(,viommu=(virtio|intel))?$", var.machine_type))  }
+      error_message = "machine_type має бути 'pc' (i440fx) або 'q35'. Для VIOMMU: 'q35,viommu=virtio'."
 }
 
 variable "efi_datastore" {
