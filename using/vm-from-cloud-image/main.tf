@@ -27,7 +27,7 @@ module "web_01" {
   disk_size = 10
 
   ipv4_address = "dhcp"
-  ssh_public_keys = [file("/home/hani/.ssh/proxmox-office-two.pub")]
+  ssh_public_keys = [file("~/.ssh/proxmox-office-two.pub")]
 
   make_template = false
   started = true
