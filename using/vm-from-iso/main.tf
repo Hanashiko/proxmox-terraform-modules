@@ -21,7 +21,7 @@ module "ubuntu_install_vm" {
   vm_id = 8999
 
   iso_source = "datastore"
-  iso_file_name = "ubuntu-24.04.2-live-server-amd64.iso"
+  iso_file_name = "ubuntu-24.04-minimal-cloudimg.img"
   iso_datastore = "local-btrfs"
 
   cpu_cores = 1
