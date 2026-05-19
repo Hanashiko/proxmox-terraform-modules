@@ -27,9 +27,16 @@ variable "pool_id" {
 }
 
 #cloud image
+variable "image_id" {
+  description = "ID вже завантаженого образу на Proxmox (якщо передано — image_url ігнорується)"
+  type    = string
+  default = null
+}
+
 variable "image_url" {
-  description = "URL cloud образу (.qcow2 або .img)"
-  type = string
+  description = "URL cloud образу (.qcow2 або .img). Використовується тільки якщо image_id = null"
+  type    = string
+  default = null
 }
 
 variable "image_checksum" {
@@ -113,9 +120,9 @@ variable "ssh_public_keys" {
 }
 
 #extra cloud init user data
-variable "user_data_file_id" {
-  description = "file_id сніпету з user-data на Proxmox (proxmox_virtual_environment_file)"
-  type = string
+variable "vendor_data_file_id" {
+  description = "file_id сніпету з vendor-data (merge-иться з user-data, не замінює його)"
+  type    = string
   default = null
 }
 

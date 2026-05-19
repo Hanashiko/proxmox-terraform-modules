@@ -8,7 +8,7 @@ output "vm_name" {
 
 output "cloud_image_id" {
   description = "file_id завантаженого образу на Proxmox"
-  value       = proxmox_virtual_environment_download_file.cloud_image.id
+  value       = var.image_url != null ? proxmox_virtual_environment_download_file.cloud_image[0].id : var.image_id
 }
 
 output "ipv4_addresses" {

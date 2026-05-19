@@ -8,9 +8,25 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint = var.proxmox_endpoint
+  endpoint  = var.proxmox_endpoint
   api_token = var.proxmox_api_token
-  insecure = true
+  insecure  = true
+
+  ssh {
+    username    = var.proxmox_ssh_user
+    private_key = file(var.proxmox_ssh_key_path)
+  }
+}
+
+resource "proxmox_virtual_environment_download_file" "ubuntu_noble" {
+  node_name    = "pve-2"
+  content_type = "import"
+  datastore_id = "local-btrfs"
+  file_name    = "noble-server-cloudimg-amd64.qcow2"
+  url          = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+
+  overwrite           = false
+  overwrite_unmanaged = true
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
@@ -22,9 +38,8 @@ resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
     file_name = "cloud-init-qemu-agent.yaml"
     data      = <<-EOF
       #cloud-config
-      packages:
-        - qemu-guest-agent
       runcmd:
+        - DEBIAN_FRONTEND=noninteractive apt-get install -y qemu-guest-agent
         - systemctl enable --now qemu-guest-agent
       EOF
   }
@@ -34,10 +49,9 @@ module "node_01" {
   source = "../../modules/vm-from-cloud-image"
 
   proxmox_node = "pve-2"
-  vm_name = "node-01"
+  vm_name      = "node-01"
 
-  image_url      = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-  image_checksum = null
+  image_id = proxmox_virtual_environment_download_file.ubuntu_noble.id
 
   cpu_cores = 2
   memory_mb = 2048
@@ -46,7 +60,7 @@ module "node_01" {
   ipv4_address        = "dhcp"
   ssh_public_keys     = [file("~/.ssh/proxmox-office-two.pub")]
   cloud_init_password = var.vm_password
-  user_data_file_id   = proxmox_virtual_environment_file.cloud_init_user_data.id
+  vendor_data_file_id = proxmox_virtual_environment_file.cloud_init_user_data.id
 
   make_template = false
   started = true
@@ -56,10 +70,9 @@ module "node_02" {
   source = "../../modules/vm-from-cloud-image"
 
   proxmox_node = "pve-2"
-  vm_name = "node-02"
+  vm_name      = "node-02"
 
-  image_url      = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-  image_checksum = null
+  image_id = proxmox_virtual_environment_download_file.ubuntu_noble.id
 
   cpu_cores = 2
   memory_mb = 2048
@@ -68,7 +81,7 @@ module "node_02" {
   ipv4_address        = "dhcp"
   ssh_public_keys     = [file("~/.ssh/proxmox-office-two.pub")]
   cloud_init_password = var.vm_password
-  user_data_file_id   = proxmox_virtual_environment_file.cloud_init_user_data.id
+  vendor_data_file_id = proxmox_virtual_environment_file.cloud_init_user_data.id
 
   make_template = false
   started = true
@@ -78,10 +91,9 @@ module "control_plane_01" {
   source = "../../modules/vm-from-cloud-image"
 
   proxmox_node = "pve-2"
-  vm_name = "control-plane-01"
+  vm_name      = "control-plane-01"
 
-  image_url      = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-  image_checksum = null
+  image_id = proxmox_virtual_environment_download_file.ubuntu_noble.id
 
   cpu_cores = 2
   memory_mb = 4096
@@ -90,7 +102,7 @@ module "control_plane_01" {
   ipv4_address        = "dhcp"
   ssh_public_keys     = [file("~/.ssh/proxmox-office-two.pub")]
   cloud_init_password = var.vm_password
-  user_data_file_id   = proxmox_virtual_environment_file.cloud_init_user_data.id
+  vendor_data_file_id = proxmox_virtual_environment_file.cloud_init_user_data.id
 
   make_template = false
   started = true
@@ -100,10 +112,9 @@ module "control_plane_02" {
   source = "../../modules/vm-from-cloud-image"
 
   proxmox_node = "pve-2"
-  vm_name = "control-plane-02"
+  vm_name      = "control-plane-02"
 
-  image_url      = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-  image_checksum = null
+  image_id = proxmox_virtual_environment_download_file.ubuntu_noble.id
 
   cpu_cores = 2
   memory_mb = 4096
@@ -112,7 +123,7 @@ module "control_plane_02" {
   ipv4_address        = "dhcp"
   ssh_public_keys     = [file("~/.ssh/proxmox-office-two.pub")]
   cloud_init_password = var.vm_password
-  user_data_file_id   = proxmox_virtual_environment_file.cloud_init_user_data.id
+  vendor_data_file_id = proxmox_virtual_environment_file.cloud_init_user_data.id
 
   make_template = false
   started = true

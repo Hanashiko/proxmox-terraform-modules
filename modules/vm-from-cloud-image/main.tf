@@ -1,19 +1,19 @@
 resource "proxmox_virtual_environment_download_file" "cloud_image" {
-  node_name = var.proxmox_node
+  count = var.image_url != null ? 1 : 0
+
+  node_name    = var.proxmox_node
   content_type = "import"
   datastore_id = var.image_datastore
 
-  # file_name = basename(var.image_url)
   file_name = "noble-server-cloudimg-amd64.qcow2"
 
   url = var.image_url
 
-  checksum = var.image_checksum != null ? split(":", var.image_checksum)[1] : null
+  checksum           = var.image_checksum != null ? split(":", var.image_checksum)[1] : null
   checksum_algorithm = var.image_checksum != null ? split(":", var.image_checksum)[0] : null
 
-  overwrite = false #не перезеаписуєм якшо є
-  overwrite_unmanaged = true #якшо файл є але не в стейті то перезаписуєм
-  # decompress = true #розпакувати .gz/.xz якшо є
+  overwrite           = false
+  overwrite_unmanaged = true
 }
 
 resource "proxmox_virtual_environment_vm" "this" {
@@ -56,10 +56,10 @@ resource "proxmox_virtual_environment_vm" "this" {
     ssd     = var.disk_ssd
     discard = var.disk_ssd ? "on" : "ignore"
     cache   = var.disk_cache
-    iothread = true
+    iothread = var.scsi_controller == "virtio-scsi-single"
 
     #імпорт образу як джерело диска
-    import_from = proxmox_virtual_environment_download_file.cloud_image.id
+    import_from = var.image_url != null ? proxmox_virtual_environment_download_file.cloud_image[0].id : var.image_id
   }
 
   dynamic "efi_disk" {
@@ -75,7 +75,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   initialization {
     datastore_id = var.cloud_init_datastore
 
-    user_data_file_id = var.user_data_file_id
+    vendor_data_file_id = var.vendor_data_file_id
 
     ip_config {
       ipv4 {
@@ -107,5 +107,11 @@ resource "proxmox_virtual_environment_vm" "this" {
     ignore_changes = [
       disk,
     ]
+  }
+
+  timeouts {
+    create = "10m"
+    update = "10m"
+    delete = "5m"
   }
 }

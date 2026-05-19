@@ -22,14 +22,26 @@ output "node_02_ipv4" {
   )
 }
 
-output "control_plane_id" {
-  value = module.control_plane.vm_id
+output "control_plane_01_id" {
+  value = module.control_plane_01.vm_id
 }
 
-output "control_plane_ipv4" {
-  description = "IP адреси control-plane (від QEMU guest agent)"
+output "control_plane_01_ipv4" {
+  description = "IP адреси control-plane-01 (від QEMU guest agent)"
   value = try(
-    [for ip in flatten(module.control_plane.ipv4_addresses) : ip if !startswith(ip, "127.")],
+    [for ip in flatten(module.control_plane_01.ipv4_addresses) : ip if !startswith(ip, "127.")],
+    []
+  )
+}
+
+output "control_plane_02_id" {
+  value = module.control_plane_02.vm_id
+}
+
+output "control_plane_02_ipv4" {
+  description = "IP адреси control-plane-02 (від QEMU guest agent)"
+  value = try(
+    [for ip in flatten(module.control_plane_02.ipv4_addresses) : ip if !startswith(ip, "127.")],
     []
   )
 }
