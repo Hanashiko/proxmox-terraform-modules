@@ -108,10 +108,4 @@ resource "proxmox_virtual_environment_vm" "this" {
       disk,
     ]
   }
-
-  timeouts {
-    create = "10m"
-    update = "10m"
-    delete = "5m"
-  }
 }

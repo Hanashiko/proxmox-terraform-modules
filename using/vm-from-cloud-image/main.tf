@@ -87,6 +87,27 @@ module "node_02" {
   started = true
 }
 
+module "node_03" {
+  source = "../../modules/vm-from-cloud-image"
+
+  proxmox_node = "pve-2"
+  vm_name      = "node-03"
+
+  image_id = proxmox_virtual_environment_download_file.ubuntu_noble.id
+
+  cpu_cores = 2
+  memory_mb = 2048
+  disk_size = 10
+
+  ipv4_address        = "dhcp"
+  ssh_public_keys     = [file("~/.ssh/proxmox-office-two.pub")]
+  cloud_init_password = var.vm_password
+  vendor_data_file_id = proxmox_virtual_environment_file.cloud_init_user_data.id
+
+  make_template = false
+  started = true
+}
+
 module "control_plane_01" {
   source = "../../modules/vm-from-cloud-image"
 
@@ -113,6 +134,27 @@ module "control_plane_02" {
 
   proxmox_node = "pve-2"
   vm_name      = "control-plane-02"
+
+  image_id = proxmox_virtual_environment_download_file.ubuntu_noble.id
+
+  cpu_cores = 2
+  memory_mb = 4096
+  disk_size = 10
+
+  ipv4_address        = "dhcp"
+  ssh_public_keys     = [file("~/.ssh/proxmox-office-two.pub")]
+  cloud_init_password = var.vm_password
+  vendor_data_file_id = proxmox_virtual_environment_file.cloud_init_user_data.id
+
+  make_template = false
+  started = true
+}
+
+module "control_plane_03" {
+  source = "../../modules/vm-from-cloud-image"
+
+  proxmox_node = "pve-2"
+  vm_name      = "control-plane-03"
 
   image_id = proxmox_virtual_environment_download_file.ubuntu_noble.id
 
